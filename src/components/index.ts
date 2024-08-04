@@ -15,3 +15,6 @@ export { default as HostCard } from './card/hostCard';
 // modal
 export { default as Modal } from './modal/modal';
 export { default as OptionModal } from './modal/optionModal';
+export { default as ImageModal } from './modal/image/imageModal';
+export { default as LocalPathContent } from './modal/image/content/localPathContent';
+export { default as DockerHubContent } from './modal/image/content/dockerHubContent';

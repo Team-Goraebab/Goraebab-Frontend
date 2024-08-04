@@ -1,32 +1,75 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaFolderOpen } from 'react-icons/fa';
 
 interface LocalPathContentProps {
-  onBack: () => void;
+  onFileChange: (file: File | null) => void;
+  file: File | null;
+  onClose: () => void;
 }
 
-const LocalPathContent: React.FC<LocalPathContentProps> = ({ onBack }) => {
+const LocalPathContent = ({
+  onFileChange,
+  file,
+  onClose,
+}: LocalPathContentProps) => {
+  useEffect(() => {
+    if (!file) {
+      onFileChange(null);
+    }
+  }, [onClose, file, onFileChange]);
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      onFileChange(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      onFileChange(e.target.files[0]);
+    } else {
+      onFileChange(null);
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full relative p-2">
-      <h2 className="text-lg md:text-xl lg:text-2xl xl:text-2xl font-bold text-left text-blue_2">
-        Local Path
-      </h2>
-      <div className="flex flex-col items-center justify-center border border-grey_3 rounded-lg p-6 mt-4 w-full h-full">
-        <FaFolderOpen className="text-grey_4 mb-4 w-20 h-20" />
-        <p className="font-bold text-xl text-grey_4">Local Path</p>
-        <p className="text-base text-grey_4 mt-2">
-          내 컴퓨터에서 도커 이미지를 가져옵니다.
-        </p>
-      </div>
-      <div className="flex justify-end mt-4">
-        <button
-          className="mr-4 p-2 bg-blue_2 text-white rounded"
-          onClick={onBack}
-        >
-          뒤로 가기
-        </button>
-        <button className="p-2 bg-blue_2 text-white rounded">확인</button>
-      </div>
+    <div
+      className="flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-lg w-full h-full p-6 cursor-pointer hover:border-blue-500 transition-colors"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <FaFolderOpen className="text-gray-400 mb-4 w-20 h-20" />
+      <p className="font-bold text-xl text-gray-400">Local Path</p>
+      <p className="text-base text-gray-400 mt-2">
+        내 컴퓨터에서 도커 이미지를 가져옵니다.
+      </p>
+      <input
+        type="file"
+        onChange={handleFileInputChange}
+        className="hidden"
+        id="file-upload"
+      />
+      <label
+        htmlFor="file-upload"
+        className="mt-4 px-4 py-2 bg-gray-200 text-black rounded shadow hover:bg-gray-300 focus:outline-none transition-colors"
+      >
+        파일 찾기
+      </label>
+      {file && (
+        <div className="mt-4 text-center w-full">
+          <p className="text-gray-600">파일 이름: {file.name}</p>
+          <p className="text-gray-600 mb-2">
+            이미지 용량: {(file.size / (1024 * 1024)).toFixed(2)} MB
+          </p>
+        </div>
+      )}
     </div>
   );
 };

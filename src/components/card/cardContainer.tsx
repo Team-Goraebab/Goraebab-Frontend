@@ -1,17 +1,19 @@
 import React from 'react';
+import { useStore } from '@/store/cardStore';
 
-interface Container {
-  name: string;
-  ip: string;
-  status: string;
+export interface Container {
+  name?: string;
+  ip?: string;
+  active?: string;
 }
 
 export interface CardContainerProps {
   networkIp: string;
-  containers: Container[];
 }
 
-const CardContainer = ({ networkIp, containers }: CardContainerProps) => {
+const CardContainer = ({ networkIp }: CardContainerProps) => {
+  const containers = useStore((state) => state.containers);
+
   return (
     <div className="flex flex-col items-center p-[10px] border bg-white border-grey_3 rounded-lg shadow-lg w-[450px]">
       <div className="w-full text-center bg-blue_1 text-blue_2 border-2 border-blue_2 p-2 rounded-md mb-3 text-sm font-semibold">
@@ -29,7 +31,7 @@ const CardContainer = ({ networkIp, containers }: CardContainerProps) => {
                 <span>{container.ip}</span>
                 <span
                   className={`w-2 h-2 rounded-full ${
-                    container.status === 'running'
+                    container.active === 'running'
                       ? 'bg-green-500'
                       : 'bg-red-500'
                   }`}

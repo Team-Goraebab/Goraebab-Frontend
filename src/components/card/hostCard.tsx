@@ -1,6 +1,6 @@
 import { FaHome } from 'react-icons/fa';
 
-type HostCardProps = {
+export type HostCardProps = {
   hostNm?: string;
   ip: string;
   /**

@@ -6,7 +6,7 @@ import { HOST_DATA, NETWORK_DATA } from '@/data/mock';
 export default function Page() {
   return (
     <div>
-      <ImagePage />
+      {/* <ImagePage /> */}
       <ContainerPage />
     </div>
   );

@@ -20,7 +20,7 @@ const HostCard = ({ hostNm, ip, status = true }: HostCardProps) => {
       <div
         className={`flex items-center justify-center w-full space-x-2 rounded-md border-solid border-2 ${borderColor} ${bgColor} py-2 mb-3`}
       >
-        <FaHome className={`w-6 h-6 ${textColor}`} />
+        <FaHome className={`w-4 h-4 ${textColor}`} />
         <div className={`text-sm font-semibold ${textColor}`}>
           {hostNm || 'HOST'}
         </div>

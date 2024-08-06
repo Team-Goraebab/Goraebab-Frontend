@@ -75,3 +75,23 @@ export const VOLUME_CARD_DATA = [
     status: 'success',
   },
 ];
+
+export const HOST_DATA = {
+  hostNm: 'Host Name',
+  ip: '12.34.56.67',
+  status: true,
+};
+
+export const NETWORK_DATA = {
+  networkIp: '172.17.0.1',
+  containers: [
+    { name: 'naver-backend', ip: '172.17.0.2', status: 'running' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'stopped' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'running' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'stopped' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'running' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'stopped' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'stopped' },
+    { name: 'naver-frontend', ip: '172.17.0.3', status: 'stopped' },
+  ],
+};

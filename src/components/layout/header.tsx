@@ -2,9 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Tooltip } from 'react-tooltip';
 import { MENU_ITEMS } from '@/data/menu';
-import { useMenuStore } from '@/store/menuStore';
+import { useMenuStore } from '@/store/store';
 
 const Header = () => {
   const { activeId, setActiveId } = useMenuStore();
@@ -44,8 +43,6 @@ const Header = () => {
               className={`flex flex-col items-center cursor-pointer ${
                 activeId === item.id ? 'text-blue_2' : 'text-gray-600'
               }`}
-              data-tooltip-id="my-tooltip"
-              data-tooltip-content={item.name}
             >
               <item.icon className="text-2xl" />
             </div>
@@ -58,7 +55,6 @@ const Header = () => {
               top: 37,
             }}
           />
-          <Tooltip id="my-tooltip" style={{ marginTop: 13, right: 10 }} />
         </nav>
       </div>
     </header>

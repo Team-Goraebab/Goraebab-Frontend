@@ -3,7 +3,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import 'react-tooltip/dist/react-tooltip.css';
 import '../../public/style/style.css';
 import React from 'react';
 import Layout from '../components/layout/layout';

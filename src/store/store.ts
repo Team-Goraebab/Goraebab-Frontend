@@ -6,7 +6,6 @@ interface MenuState {
   setActiveId: (id: number) => void;
 }
 
-// 메뉴 클릭 시 아이디 값으로 저장
 export const useMenuStore = create<MenuState>()(
   persist(
     (set) => ({

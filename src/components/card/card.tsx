@@ -1,60 +1,85 @@
-'use client';
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Modal, OptionModal } from '@/components';
-import { useSnackbar } from 'notistack';
+import { useStore } from '@/store/cardStore';
 
-interface VolumeProps {
+interface CardProps {
   id: string;
-  name: string;
-  driver: string;
-  mountPoint: string;
-  capacity: string;
+  name?: string;
+  ip?: string;
+  size: string;
+  tags: string;
+  /**
+   * running
+   * stopped
+   */
+  active?: string;
+  /**
+   * primary
+   * secondary
+   * accent
+   * success
+   */
   status: string;
-  connectedContainers?: {
-    id: string;
-    name: string;
-    ip: string;
-    status: string;
-  }[];
 }
 
-interface VolumeCardProps {
-  data: VolumeProps;
-  selectedHostId: string | null;
+interface CardDataProps {
+  data: CardProps;
 }
 
+/**
+ *
+ * @param status card의 상태 값
+ * @returns status에 따른 색상을 반환
+ */
 const getStatusColors = (status: string) => {
   switch (status) {
-    case 'Available':
-      return { bg1: '#d1f6e2', bg2: '#25BD6B' };
-    case 'In Use':
-      return { bg1: '#f6e3d1', bg2: '#FFA048' };
-    case 'Error':
+    case 'primary':
+      return { bg1: '#d2d1f6', bg2: '#4C48FF' };
+    case 'secondary':
       return { bg1: '#f6d4d6', bg2: '#FF4853' };
+    case 'accent':
+      return { bg1: '#f6e3d1', bg2: '#FFA048' };
+    case 'success':
+      return { bg1: '#d1f6e2', bg2: '#25BD6B' };
     default:
       return { bg1: '#d1d1d1', bg2: '#7F7F7F' };
   }
 };
 
-const VolumeCard = ({ data, selectedHostId }: VolumeCardProps) => {
-  const { enqueueSnackbar } = useSnackbar();
+const Card = ({ data }: CardDataProps) => {
   const { bg1, bg2 } = getStatusColors(data.status);
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const addContainer = useStore((state) => state.addContainer);
+
+  const items = [
+    { label: 'ID', value: data.id },
+    { label: 'SIZE', value: data.size },
+    { label: 'TAGS', value: data.tags },
+  ];
 
   const handleOptionClick = () => {
     setShowOptions(!showOptions);
   };
 
+  const handleGetInfo = () => {
+    console.log('정보 가져오기 클릭됨');
+    setShowOptions(false);
+  };
+
+  const handleRun = () => {
+    addContainer({ name: data.name, ip: data.ip, active: data.active });
+  };
+
   const handleDelete = () => {
+    console.log('삭제하기 클릭됨');
     setShowModal(true);
     setShowOptions(false);
   };
 
   const handleConfirmDelete = () => {
-    console.log('볼륨 삭제가 확인되었습니다.');
+    console.log('삭제가 확인되었습니다.');
     setShowModal(false);
   };
 
@@ -76,20 +101,6 @@ const VolumeCard = ({ data, selectedHostId }: VolumeCardProps) => {
     };
   }, [cardRef]);
 
-  const volumeItems = [
-    { label: 'Name', value: data.name },
-    { label: 'Driver', value: data.driver },
-    { label: 'Mount Point', value: data.mountPoint },
-    { label: 'Capacity', value: data.capacity },
-    {
-      label: 'Containers',
-      value:
-        (data.connectedContainers || [])
-          .map((container) => `${container.name} (${container.ip})`)
-          .join(', ') || 'No connected containers',
-    },
-  ];
-
   return (
     <div
       ref={cardRef}
@@ -110,17 +121,17 @@ const VolumeCard = ({ data, selectedHostId }: VolumeCardProps) => {
           {showOptions && (
             <div className="absolute top-4 left-16">
               <OptionModal
-                onTopHandler={() => console.log('정보 가져오기 클릭됨')}
-                onMiddleHandler={() => console.log('기타 작업')}
+                onTopHandler={handleGetInfo}
+                onMiddleHandler={handleRun}
                 onBottomHandler={handleDelete}
               />
             </div>
           )}
         </div>
-        {volumeItems.map((item, index) => (
-          <div key={index} className="flex items-center mt-[5px] space-x-3">
+        {items.map((item, index) => (
+          <div key={index} className="flex items-center mt-[5px] space-x-3.5">
             <span
-              className="text-xs py-1.5 w-[70px] rounded-md font-bold text-center"
+              className="text-xs py-1 w-[60px] rounded-md font-bold text-center"
               style={{ backgroundColor: bg1, color: bg2 }}
             >
               {item.label}
@@ -140,4 +151,4 @@ const VolumeCard = ({ data, selectedHostId }: VolumeCardProps) => {
   );
 };
 
-export default VolumeCard;
+export default Card;

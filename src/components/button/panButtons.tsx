@@ -1,14 +1,18 @@
 'use client';
 
-import { useHandModeStore } from '@/store/handModeStore';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaMousePointer, FaHandPaper } from 'react-icons/fa';
 
-const PanButtons = () => {
-  const isHandMode = useHandModeStore((state) => state.isHandMode);
-  const setHandMode = useHandModeStore((state) => state.setHandMode);
+interface PanBtnProps {
+  setIsHandMode: (isHandMode: boolean) => void;
+}
+
+const PanButtons = ({ setIsHandMode }: PanBtnProps) => {
+  const [isHandMode, setIsHandModeLocal] = useState(false);
 
   useEffect(() => {
+    setIsHandMode(isHandMode);
+
     const handlePan = (event: MouseEvent) => {
       if (isHandMode && event.buttons === 1) {
         event.preventDefault();
@@ -45,16 +49,17 @@ const PanButtons = () => {
   }, [isHandMode]);
 
   const handleMouseClick = () => {
-    setHandMode(false);
+    setIsHandModeLocal(false);
+    setIsHandMode(false);
   };
 
   const handleHandClick = () => {
-    setHandMode(true);
+    setIsHandModeLocal(true);
+    setIsHandMode(true);
   };
 
   return (
-    // <div className="fixed bottom-4 left-[445px] transform translate-x-4 w-[130px] h-[50px] p-3 bg-white rounded-lg shadow-lg flex items-center justify-between">
-    <div className="fixed bottom-4 left-[300px] transform translate-x-4 w-[130px] h-[50px] p-3 bg-white rounded-lg shadow-lg flex items-center justify-between">
+    <div className="fixed bottom-4 left-[445px] transform translate-x-4 w-[130px] h-[50px] p-3 bg-white rounded-lg shadow-lg flex items-center justify-between">
       <button
         className={`p-2 rounded-full ${
           !isHandMode ? 'bg-blue_1 text-blue_2' : 'text-black'

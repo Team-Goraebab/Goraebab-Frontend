@@ -43,14 +43,14 @@ interface ImageToNetwork {
 }
 
 const CardContainer = ({
-  networkName,
-  networkIp,
-  containers,
-  themeColor,
-  onDelete,
-  onSelectNetwork,
-  isSelected,
-}: CardContainerProps) => {
+                         networkName,
+                         networkIp,
+                         containers,
+                         themeColor,
+                         onDelete,
+                         onSelectNetwork,
+                         isSelected,
+                       }: CardContainerProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const randomId = uuidv4();
 

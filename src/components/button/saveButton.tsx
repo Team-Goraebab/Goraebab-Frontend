@@ -61,7 +61,6 @@ const SaveButton = () => {
 
     const formData = new FormData();
 
-    // Create blueprintReqDto object
     const blueprintReqDto: BlueprintReqDto = {
       name: blueprintName,
       isDockerRemote: isDockerRemote,
@@ -72,13 +71,11 @@ const SaveButton = () => {
     }
 
     console.log('JSON 데이터:', JSON.stringify(blueprintReqDto, null, 2));
-    // Convert blueprintReqDto to JSON and append as a Blob
     const jsonBlob = new Blob([JSON.stringify(blueprintReqDto)], {
       type: 'application/json',
     });
     formData.append('blueprintReqDto', jsonBlob);
 
-    // Append the HTML content as a Blob with correct content type
     const contentBlob = new Blob([mainContent], {
       type: 'multipart/form-data',
     });
@@ -90,7 +87,6 @@ const SaveButton = () => {
         body: formData,
       });
 
-      // Check if the response is in JSON format
       const contentType = response.headers.get('Content-Type');
 
       if (response.ok) {

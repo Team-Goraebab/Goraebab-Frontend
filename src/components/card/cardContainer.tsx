@@ -266,7 +266,7 @@ const CardContainer = ({
                             }}
                           >
                             <FaInfoCircle className="w-4 h-4" />
-                            <span>정보</span>
+                            <span className="font-pretendard">정보</span>
                           </button>
                           <button
                             className="flex items-center space-x-1 text-sm text-gray-600 hover:text-gray-800"
@@ -276,21 +276,21 @@ const CardContainer = ({
                             }}
                           >
                             <FaPlusCircle className="w-4 h-4" />
-                            <span>볼륨 추가</span>
+                            <span className="font-pretendard">볼륨 추가</span>
                           </button>
                           <button
-                            className="flex items-center space-x-1 text-sm text-red-500 hover:text-red_6"
+                            className="flex items-center space-x-1 text-sm text-red_5 hover:text-red_6"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDeleteImage(index);
                             }}
                           >
                             <FaTimesCircle className="w-4 h-4" />
-                            <span>삭제</span>
+                            <span className="font-pretendard">삭제</span>
                           </button>
                         </div>
                       </div>
-                      {imageVolumes[networkName]?.[imageKey] && (
+                      {imageVolumes[networkName]?.[imageKey]?.length > 0 && (
                         <div className="mt-3 flex justify-end">
                           <button
                             className="text-gray-500 hover:text-gray-700"
@@ -301,7 +301,7 @@ const CardContainer = ({
                         </div>
                       )}
                     </div>
-                    {isExpanded && imageVolumes[networkName]?.[imageKey] && (
+                    {isExpanded && imageVolumes[networkName]?.[imageKey]?.length > 0 && (
                       <div className="bg-gray-50 p-4 rounded-b-lg border-t border-gray-200">
                         <h4 className="text-sm font-semibold text-gray-700 mb-2">Volumes
                           ({imageVolumes[networkName][imageKey].length})</h4>

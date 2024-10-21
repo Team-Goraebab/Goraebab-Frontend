@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -57,7 +55,7 @@ const HostModal = ({ onClose, onSave, availableNetworks }: HostModalProps) => {
   });
 
   useEffect(() => {
-    if (availableNetworks.length > 0) {
+    if (Array.isArray(availableNetworks) && availableNetworks.length > 0) {
       const firstNetwork = availableNetworks[0];
       setNetworkName(firstNetwork.Name);
       setNetworkIp(firstNetwork.IPAM?.Config?.[0]?.Gateway || '');
@@ -168,11 +166,12 @@ const HostModal = ({ onClose, onSave, availableNetworks }: HostModalProps) => {
               label="Select Network"
               fullWidth
             >
-              {availableNetworks.map((net) => (
-                <MenuItem key={net.Id} value={net.Name}>
-                  {net.Name} (IP: {net.IPAM?.Config?.[0]?.Gateway || 'None'})
-                </MenuItem>
-              ))}
+              {Array.isArray(availableNetworks) &&
+                availableNetworks.map((net) => (
+                  <MenuItem key={net.Id} value={net.Name}>
+                    {net.Name} (IP: {net.IPAM?.Config?.[0]?.Gateway || 'None'})
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
           <Box>

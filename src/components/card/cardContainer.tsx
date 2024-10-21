@@ -213,7 +213,7 @@ const CardContainer = ({
                             }}
                           >
                             <FaInfoCircle className="w-4 h-4" />
-                            <span>정보</span>
+                            <span className="font-pretendard">정보</span>
                           </button>
                           <button
                             className="flex items-center space-x-1 text-sm text-grey_6 hover:text-grey_7"
@@ -223,17 +223,17 @@ const CardContainer = ({
                             }}
                           >
                             <FaPlusCircle className="w-4 h-4" />
-                            <span>볼륨 추가</span>
+                            <span className="font-pretendard">볼륨 추가</span>
                           </button>
                           <button
-                            className="flex items-center space-x-1 text-sm text-red-500 hover:text-red_6"
+                            className="flex items-center space-x-1 text-sm text-red_5 hover:text-red_6"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDeleteImage(image.id);
                             }}
                           >
                             <FaTimesCircle className="w-4 h-4" />
-                            <span>삭제</span>
+                            <span className="font-pretendard">삭제</span>
                           </button>
                         </div>
                       </div>

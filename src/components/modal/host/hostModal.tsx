@@ -105,7 +105,7 @@ const HostModal = ({ onClose, onSave, availableNetworks }: HostModalProps) => {
 
   const handleColorSelection = (colorLabel: string) => {
     const mainColor = colorsOption.find(
-      (color) => color.label === colorLabel && !color.sub
+      (color) => color.label === colorLabel && !color.sub,
     );
     const subColor = colorsOption.find(
       (color) => color.label === colorLabel && color.sub

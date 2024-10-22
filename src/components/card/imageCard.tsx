@@ -54,8 +54,6 @@ interface ContainerConfig {
 const ImageCard = ({ data, onDeleteSuccess, isRemote = false }: CardDataProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  console.log(isRemote);
-  
   const [{ isDragging }, drag] = useDrag(() => ({
     type: isRemote ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD', // remote인지 local인지 구분
     item: { image: data.RepoTags[0], isRemote },

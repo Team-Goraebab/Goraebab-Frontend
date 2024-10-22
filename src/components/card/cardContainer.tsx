@@ -93,9 +93,6 @@ const CardContainer = ({
     }
   };
 
-  console.log(isRemoteNetwork);
-  
-
   const [{ isOver }, drop] = useDrop({
     accept: isRemoteNetwork ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD',
     drop: (item: { image: string }) => {

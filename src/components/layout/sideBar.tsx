@@ -12,7 +12,6 @@ import ImageCard from '../card/imageCard';
 import DaemonConnectBar from '../bar/daemonConnectBar';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import LargeButton from '../button/largeButton';
-import { fetchData } from '@/services/apiUtils';
 import { RxReload } from 'react-icons/rx';
 import ContainerCardGroup from '@/components/card/containerCardGroup';
 import { selectedHostStore } from '@/store/seletedHostStore';
@@ -43,7 +42,7 @@ interface ComponentMapItem {
 const loadData = async (
   apiUrl: string,
   setData: React.Dispatch<React.SetStateAction<any[]>>,
-  dataKey?: string
+  dataKey?: string,
 ) => {
   try {
     const response = await fetch(apiUrl, { cache: 'no-store' });
@@ -59,6 +58,8 @@ const Sidebar = () => {
   const { activeId } = useMenuStore();
   const selectedHostIp = selectedHostStore((state) => state.selectedHostIp);
   console.log('선택한 ip', selectedHostIp);
+  
+  const [remoteImageData, setRemoteImageData] = useState<any[]>([]);
 
   const [networkData, setNetworkData] = useState<any[]>([]);
   const [volumeData, setVolumeData] = useState<any[]>([]);
@@ -87,7 +88,7 @@ const Sidebar = () => {
       await loadData(
         url,
         dataHandlers[activeId as 1 | 2 | 3 | 4].setData,
-        dataKey
+        dataKey,
       );
 
       setTimeout(() => {
@@ -131,7 +132,8 @@ const Sidebar = () => {
   const currentComponent = componentMap[activeId as 1 | 2 | 3 | 4];
 
   const renderNoDataMessage = (message: string) => (
-    <div className="flex flex-col items-center justify-center text-center p-4 border border-dashed border-blue_3 rounded-md bg-blue_0">
+    <div
+      className="flex flex-col items-center justify-center text-center p-4 border border-dashed border-blue_3 rounded-md bg-blue_0">
       <AiOutlineInfoCircle className="text-blue_6 text-2xl mb-2" />
       <p className="font-pretendard font-medium text-blue_6">{message}</p>
     </div>
@@ -172,21 +174,21 @@ const Sidebar = () => {
             containers={containers}
             onDeleteSuccess={handleDeleteSuccess}
           />
-        )
+        ),
       );
     }
 
     return data && data.length > 0
       ? data.map(
-          (item, index) =>
-            CardComponent && (
-              <CardComponent
-                key={index}
-                data={item}
-                onDeleteSuccess={handleDeleteSuccess}
-              />
-            )
-        )
+        (item, index) =>
+          CardComponent && (
+            <CardComponent
+              key={index}
+              data={item}
+              onDeleteSuccess={handleDeleteSuccess}
+            />
+          ),
+      )
       : renderNoDataMessage(noDataMessage);
   };
 
@@ -206,6 +208,27 @@ const Sidebar = () => {
     refreshData();
     console.log('refresh .......');
   }, [selectedHostIp]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (activeId === 2) {
+        try {
+          const localResponse = await fetch(`/api/image/list?hostIp=${selectedHostIp}`);
+          const remoteResponse = await fetch(`/api/image/list?hostIp=${selectedHostIp}`);
+
+          const localData = await localResponse.json();
+          const remoteData = await remoteResponse.json();
+
+          setImageData(localData || []);
+          setRemoteImageData(remoteData || []);
+        } catch (error) {
+          console.error('Error loading images:', error);
+        }
+      }
+    };
+
+    fetchImages();
+  }, [activeId, selectedHostIp]);
 
   return (
     <div className="fixed z-[99] top-0 left-0 w-[300px] flex flex-col h-full bg-white border-r-2 border-grey_2 pt-14">
@@ -233,7 +256,8 @@ const Sidebar = () => {
             onCreate: handleCreate,
           })
         ) : (
-          <LargeButton title={'추가하기'} onClick={() => {}} />
+          <LargeButton title={'추가하기'} onClick={() => {
+          }} />
         )}
       </div>
       <div>

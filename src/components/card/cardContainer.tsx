@@ -27,12 +27,14 @@ export interface CardContainerProps {
   onDelete?: () => void;
   onSelectNetwork?: () => void;
   isSelected?: boolean;
+  isRemoteNetwork?: boolean; // Remote인지 여부를 받습니다.
 }
 
 interface ImageInfo {
   id: string;
   name: string;
   tag: string;
+  isRemote?: boolean; // 추가: Remote 이미지인지 여부를 명시합니다.
 }
 
 interface ImageToNetwork {
@@ -50,6 +52,7 @@ const CardContainer = ({
                          onDelete,
                          onSelectNetwork,
                          isSelected,
+                         isRemoteNetwork = false, // 기본값: 로컬 네트워크
                        }: CardContainerProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const randomId = uuidv4();
@@ -65,21 +68,23 @@ const CardContainer = ({
   const [isMountModalOpen, setIsMountModalOpen] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [mountConfigs, setMountConfigs] = useState<{ [key: string]: any[] }>(
-    {}
+    {},
   );
   const [imageVolumes, setImageVolumes] = useState<{
     [imageId: string]: VolumeData[];
   }>({});
 
+  // 이미지 이름과 태그를 분리하는 함수
   const splitImageNameAndTag = (image: string, id: string): ImageInfo => {
-    const [name, tag] = image.split(':');
-    return { id, name, tag };
+    const [name, tag] = image.includes(':') ? image.split(':') : [image, 'latest'];
+    return { id, name, tag, isRemote: isRemoteNetwork }; // isRemoteNetwork 값 추가
   };
+
 
   const handleGetInfo = async (imageName: string) => {
     try {
       const imageDetail = await fetch(
-        `/api/image/detail?name=${imageName}`
+        `/api/image/detail?name=${imageName}`,
       ).then((res) => res.json());
       setDetailData(imageDetail);
       setIsModalOpen(true);
@@ -88,8 +93,11 @@ const CardContainer = ({
     }
   };
 
+  console.log(isRemoteNetwork);
+  
+
   const [{ isOver }, drop] = useDrop({
-    accept: 'IMAGE_CARD',
+    accept: isRemoteNetwork ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD',
     drop: (item: { image: string }) => {
       const imageId = `${item.image}-${randomId}`;
       const imageInfo = splitImageNameAndTag(item.image, imageId);
@@ -361,7 +369,8 @@ const CardContainer = ({
               })}
             </div>
           ) : (
-            <div className="w-full h-44 flex items-center justify-center text-grey_7 p-2 text-sm border-2 border-dashed border-grey_2 rounded-lg">
+            <div
+              className="w-full h-44 flex items-center justify-center text-grey_7 p-2 text-sm border-2 border-dashed border-grey_2 rounded-lg">
               이미지를 드래그해서 놓으세요
             </div>
           )}

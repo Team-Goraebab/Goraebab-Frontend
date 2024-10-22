@@ -32,11 +32,13 @@ interface CardProps {
   ExposedPorts?: { [key: string]: {} };
   Volumes?: { [key: string]: {} };
   Env?: string[];
+  isRemote?: boolean;
 }
 
 interface CardDataProps {
   data: CardProps;
   onDeleteSuccess: () => void;
+  isRemote?: boolean;
 }
 
 interface ContainerConfig {
@@ -49,12 +51,14 @@ interface ContainerConfig {
   hostId?: string;
 }
 
-const ImageCard = ({ data, onDeleteSuccess }: CardDataProps) => {
-  const ref = useRef<HTMLDivElement>(null); // useRef 생성
+const ImageCard = ({ data, onDeleteSuccess, isRemote = false }: CardDataProps) => {
+  const ref = useRef<HTMLDivElement>(null);
 
+  console.log(isRemote);
+  
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'IMAGE_CARD',
-    item: { image: data.RepoTags[0] },
+    type: isRemote ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD', // remote인지 local인지 구분
+    item: { image: data.RepoTags[0], isRemote },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -102,7 +106,7 @@ const ImageCard = ({ data, onDeleteSuccess }: CardDataProps) => {
         `/api/image/delete?id=${data.Id}&force=true`,
         {
           method: 'DELETE',
-        }
+        },
       );
 
       if (!response.ok) {
@@ -114,7 +118,7 @@ const ImageCard = ({ data, onDeleteSuccess }: CardDataProps) => {
         enqueueSnackbar,
         '이미지가 삭제되었습니다.',
         'success',
-        '#25BD6B'
+        '#25BD6B',
       );
 
       onDeleteSuccess();
@@ -124,7 +128,7 @@ const ImageCard = ({ data, onDeleteSuccess }: CardDataProps) => {
         enqueueSnackbar,
         '이미지 삭제에 실패했습니다.',
         'error',
-        '#FF0000'
+        '#FF0000',
       );
     } finally {
       setShowModal(false);
@@ -182,7 +186,7 @@ const ImageCard = ({ data, onDeleteSuccess }: CardDataProps) => {
         enqueueSnackbar,
         '컨테이너가 성공적으로 실행되었습니다.',
         'success',
-        '#25BD6B'
+        '#25BD6B',
       );
     } catch (error) {
       console.error('Error running container:', error);
@@ -190,7 +194,7 @@ const ImageCard = ({ data, onDeleteSuccess }: CardDataProps) => {
         enqueueSnackbar,
         '컨테이너 실행에 실패했습니다.',
         'error',
-        '#FF0000'
+        '#FF0000',
       );
     }
   };

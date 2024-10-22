@@ -77,7 +77,7 @@ const CardContainer = ({
   // 이미지 이름과 태그를 분리하는 함수
   const splitImageNameAndTag = (image: string, id: string): ImageInfo => {
     const [name, tag] = image.includes(':') ? image.split(':') : [image, 'latest'];
-    return { id, name, tag, isRemote: isRemoteNetwork }; // isRemoteNetwork 값 추가
+    return { id, name, tag, isRemote: isRemoteNetwork };
   };
 
 
@@ -93,18 +93,24 @@ const CardContainer = ({
     }
   };
 
-  const [{ isOver }, drop] = useDrop({
+  const [{ isOver, canDrop }, drop] = useDrop(() => ({
     accept: isRemoteNetwork ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD',
-    drop: (item: { image: string }) => {
-      const imageId = `${item.image}-${randomId}`;
-      const imageInfo = splitImageNameAndTag(item.image, imageId);
-      setDroppedImages((prev) => [...prev, imageInfo]);
-      setImageToNetwork((prev) => [...prev, { ...imageInfo, networkName }]);
+    drop: (item: { image: string; isRemote: boolean }) => {
+      if (item.isRemote === isRemoteNetwork) {
+        const imageId = `${item.image}-${randomId}`;
+        const imageInfo = splitImageNameAndTag(item.image, imageId);
+        setDroppedImages((prev) => [...prev, imageInfo]);
+        setImageToNetwork((prev) => [...prev, { ...imageInfo, networkName }]);
+      }
+    },
+    canDrop: (item: { image: string; isRemote: boolean }) => {
+      return item.isRemote === isRemoteNetwork;
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
     }),
-  });
+  }));
 
   drop(ref);
 
@@ -160,14 +166,20 @@ const CardContainer = ({
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const dropStyle = {
+    border: isOver ? (canDrop ? '2px solid green' : '2px solid red') : '',
+    backgroundColor: isOver ? (canDrop ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)') : '',
+  };
+
   return (
     <>
       <div
         ref={ref}
         className={`relative flex flex-col items-center p-6 border bg-white rounded-lg shadow-lg w-[500px] transition-colors duration-200 cursor-pointer ${
-          isOver ? 'bg-grey_1' : ''
+          isOver && canDrop ? 'bg-grey_1' : ''
         }`}
         style={{
+          ...dropStyle,
           borderColor: isSelected ? themeColor.textColor : '',
           borderWidth: isSelected ? '2px' : '',
         }}
@@ -205,58 +217,10 @@ const CardContainer = ({
             className="flex items-center justify-center px-2 rounded-full transition-colors duration-200"
             style={{ color: themeColor.textColor }}
           >
-            {/* <BsCloudUpload className="w-6 h-6" /> */}
             <MdStorage className="w-6 h-6" />
           </button>
           <span>{`${networkName} : ${networkIp}`}</span>
         </div>
-        {/* <button
-          onClick={toggleDropdown}
-          className="flex items-center font-semibold"
-          style={{
-            borderColor: `${themeColor.borderColor}`,
-            color: `${themeColor.textColor}`,
-          }}
-        >
-          Mounts &nbsp;
-          {isDropdownOpen ? (
-            <FaEye className="w-4 h-4" />
-          ) : (
-            <FaEyeSlash className="w-4 h-4" />
-          )}
-        </button> */}
-
-        {/* {isDropdownOpen &&
-          mountConfigs[networkName] &&
-          mountConfigs[networkName].length > 0 && (
-            <div
-              className="absolute top-full mt-2 w-64 bg-white shadow-lg border rounded-md z-50"
-              style={{
-                borderColor: `${themeColor.borderColor}`,
-              }}
-            >
-              <h4 className="text-sm font-semibold text-grey_6 p-2 border-b">
-                Mounts
-              </h4>
-              <ul className="space-y-2 p-2 max-h-48 overflow-y-auto">
-                {mountConfigs[networkName].map((config, index) => (
-                  <li key={index} className="bg-white p-4">
-                    <div className="text-sm text-grey_7 font-semibold mb-1">
-                      {`Type: ${config.Type}`}
-                    </div>
-                    <div className="text-sm text-grey_7">
-                      <span className="font-semibold">Source:</span>{' '}
-                      {config.Source || 'N/A'}
-                    </div>
-                    <div className="text-sm text-grey_7">
-                      <span className="font-semibold">Destination:</span>{' '}
-                      {config.Destination}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )} */}
         <div className="w-full h-44 scrollbar-hide overflow-y-auto">
           {allImages.length > 0 ? (
             <div className="space-y-4">

@@ -55,8 +55,11 @@ const ImageCard = ({ data, onDeleteSuccess, isRemote = false }: CardDataProps) =
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: isRemote ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD', // remote인지 local인지 구분
-    item: { image: data.RepoTags[0], isRemote },
+    type: isRemote ? 'REMOTE_IMAGE_CARD' : 'LOCAL_IMAGE_CARD',
+    item: {
+      image: data.RepoTags[0],
+      isRemote,
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -204,7 +207,10 @@ const ImageCard = ({ data, onDeleteSuccess, isRemote = false }: CardDataProps) =
   return (
     <div
       ref={ref}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'move',
+      }}
       className="relative bg-white border rounded-lg transition-all duration-300 mb-2 overflow-hidden"
     >
       <div className="flex justify-between items-center px-4 py-2 bg-gray-50 border-b">

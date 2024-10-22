@@ -173,7 +173,7 @@ const CardSection = ({ hostData, isHandMode }: CardSectionProps) => {
                           onDelete={() => handleDeleteNetwork(host.id, networks[0].name, networks[0].id)}
                           onSelectNetwork={() => handleSelectNetwork(host.id, host.hostIp, networks[0].name, networks[0].id)}
                           isSelected={selectedNetwork?.hostId === host.id && selectedNetwork?.networkId === networks[0].id}
-                          isRemoteNetwork={host.isRemote} // remote 여부를 명시적으로 전달
+                          isRemoteNetwork={host.isRemote}
                         />
                         <ConnectBar rotate={180} themeColor={host.themeColor} />
                       </div>
@@ -305,7 +305,7 @@ const CardSection = ({ hostData, isHandMode }: CardSectionProps) => {
                           selectedNetwork?.hostId === host.id &&
                           selectedNetwork?.networkId === networks[2].id
                         }
-                        isRemoteNetwork={host.isRemote} // 여기에 isRemote prop 추가
+                        isRemoteNetwork={host.isRemote}
                       />
                     </div>
                   )}

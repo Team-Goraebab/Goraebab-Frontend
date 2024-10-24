@@ -13,7 +13,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Stack,
-  IconButton, Divider,
+  IconButton,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
@@ -59,10 +59,10 @@ const ImageStartOptionModal: React.FC<ImageStartOptionModalProps> = ({
   // DNDNetworkIp가 있을 경우 해당 IP를 가진 호스트를 기본 선택값으로 설정
   useEffect(() => {
     if (DNDNetworkIp) {
-      const matchingHost = hosts.find((host) => host.networkIp === DNDNetworkIp);
+      const matchingHost = hosts.find((host) => host.hostIp === DNDNetworkIp);
       if (matchingHost) {
         setSelectedHostId(matchingHost.id);
-        setSelectedNetworkIp(matchingHost.networkIp);
+        setSelectedNetworkIp(matchingHost.hostIp);
       }
     }
   }, [DNDNetworkIp, hosts]);
@@ -86,7 +86,7 @@ const ImageStartOptionModal: React.FC<ImageStartOptionModalProps> = ({
     setSelectedHostId(hostId);
     const selectedHost = hosts.find((host) => host.id === hostId);
     if (selectedHost) {
-      setSelectedNetworkIp(selectedHost.networkIp);
+      setSelectedNetworkIp(selectedHost.hostIp);
     }
   };
 
@@ -211,7 +211,7 @@ const ImageStartOptionModal: React.FC<ImageStartOptionModalProps> = ({
                 >
                   {hosts.map((host) => (
                     <MenuItem key={host.id} value={host.id}>
-                      {host.hostNm} ({host.networkIp})
+                      {host.hostNm} ({host.hostIp})
                     </MenuItem>
                   ))}
                 </Select>
